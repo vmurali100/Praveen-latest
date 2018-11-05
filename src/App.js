@@ -1,7 +1,26 @@
 import React, { Component } from 'react';
 import './App.css';
-import {FormControl,Grid,Row,Col,Panel,Checkbox,FormGroup,Radio,Button} from 'react-bootstrap'
+import {FormControl,Grid,Row,Col,Panel,Checkbox,FormGroup,Radio,Button} from 'react-bootstrap';
+import Profile from './Components/Profile';
+
 class App extends Component {
+  // eslint-disable-next-line no-useless-constructor
+  constructor(props) {
+    super(props);
+    
+  }
+  
+properties={
+    title:"CREATE NEW PROFILE"
+}
+ 
+  handleSubmit(e){
+    e.preventDefault()
+    console.log("handleSubmit called")
+  }
+  handleEmail(){
+    console.log("handleEmail called")
+  }
   render() {
     return (
       <div className="App">
@@ -9,25 +28,7 @@ class App extends Component {
           <Grid>
           <Row className="show-grid">
               <Col xs={12} md={6}>
-              <Panel bsStyle="danger">
-                <Panel.Heading>
-                  <Panel.Title componentClass="h3">CREATE NEW PROFILE</Panel.Title>
-                </Panel.Heading>
-                <Panel.Body>
-                <form>
-                  <FormControl type="text" placeholder="Email Address"/>
-                  <FormControl type="text" placeholder="First Name"/>
-                  <FormControl type="text" placeholder="Last Name"/>
-                  <FormControl type="text" placeholder="Phone"/>
-                  <FormControl componentClass="select" placeholder="select">
-                    <option value="select">Mobile</option>
-                    <option value="other">...</option>
-                  </FormControl>
-                  <FormControl type="text" placeholder="Business Name"/>
-                  <FormControl type="text" placeholder="Business Zip Code"/>
-                </form>
-                </Panel.Body>
-              </Panel>
+                  <Profile value={this.properties}/>
                  <Panel bsStyle="danger">
                   <Panel.Heading>
                     <Panel.Title componentClass="h3">TELL US ABOUT YOURSELF</Panel.Title>
@@ -81,3 +82,8 @@ class App extends Component {
 }
 
 export default App;
+
+
+
+
+

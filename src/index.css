@@ -15,6 +15,7 @@ code {
 .form-control{
   margin-bottom: 5px;
 }
+
 .checkbox, .radio {
  
   text-align: left;
@@ -30,4 +31,8 @@ code {
 p {
   margin: 0 0 10px;
   font-size: 10px;
+}
+.formErrors p {
+  font-size: 14px;
+  color: red;
 }
