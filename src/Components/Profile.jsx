@@ -32,9 +32,10 @@ export default class Profile extends Component {
             formValid:false
       
           }
-          this.handleEmailValidation=this.handleEmailValidation.bind(this)
+          this.handleEmailValidation=this.handleEmailValidation.bind(this);
+          this.handleSubmit=this.handleSubmit.bind(this)
     }
-    handleUserInput (e) {
+      handleUserInput (e) {
         const name = e.target.name;
         const value = e.target.value;
         this.setState({[name]: value});
@@ -55,13 +56,12 @@ export default class Profile extends Component {
             // emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
             emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
       
-            fieldValidationErrors.email = emailValid ? '' : 'is invalid';
+            fieldValidationErrors.email = emailValid ? '' : 'Please check your email address and try again.';
             break;
          
           default:
             break;
         }
-        console.log(this.state.formErrors)
         this.setState({formErrors: fieldValidationErrors,
                         emailValid: emailValid,
                       }, this.validateForm);
@@ -70,7 +70,54 @@ export default class Profile extends Component {
       validateForm() {
         this.setState({formValid: this.state.emailValid && this.state.passwordValid});
       }
-      
+
+      handleSubmit(e){
+        e.preventDefault()
+        console.log(this.state)
+        var firstNameValid="";
+        var lastNameValid=""
+        var phoneValid="";
+        var mobileValid="";
+        var firstNameError="";
+        var lastNameError="";
+        var phoneError="";
+        var mobileError="";
+        
+          firstNameValid = this.state.firstName.match(/^[a-zA-Z\s]{1,}$/i)
+          if(firstNameValid){
+            firstNameError=false
+          }else{
+            firstNameError=true
+          }
+          this.setState({firstNameError: firstNameError ? ' First Name is invalid':''})
+
+        
+          lastNameValid=this.state.lastName.match(/^[a-zA-Z\s']{1,}$/i)
+
+         if(lastNameValid){
+          lastNameError=false;
+          }else{
+            lastNameError=true;
+          }
+          this.setState({lastNameError: lastNameError ? ' Last Name is invalid':''})
+
+          phoneValid = this.state.phone.match(/^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/g)
+          if(phoneValid){
+            phoneError=false;
+          }else{
+            phoneError=true;
+          }
+          this.setState({phoneError: phoneError ? ' Phone is invalid':''})
+
+        if(!this.state.mobile){
+          mobileError=true;
+        }else{
+          mobileError=false;
+
+        }
+        this.setState({mobileError: mobileError ? ' Mobile is invalid':''})
+
+      }
   render() {
     return (
       <div>
@@ -96,27 +143,37 @@ export default class Profile extends Component {
                                 name= "firstName"
                                 onChange={(event) => this.handleUserInput(event)}
 />
+<div style={{color:"red"}}>{this.state.firstNameError}</div>
+
                   <FormControl  type="text" 
                                 placeholder="Last Name" 
                                 value={this.state.lastName} 
                                 name="lastName"
                                 onChange={(event) => this.handleUserInput(event)}
 />
+
+<div style={{color:"red"}}>{this.state.lastNameError}</div>
+
                   <FormControl  type="text" 
                                 placeholder="Phone" 
                                 value={this.state.phone} 
                                 name="phone"
                                 onChange={(event) => this.handleUserInput(event)}
 />
+<div style={{color:"red"}}>{this.state.phoneError}</div>
+
                   <FormControl  componentClass="select" 
                                 placeholder="select" 
                                 value={this.state.mobile} 
                                 name="mobile"
                                 onChange={(event) => this.handleUserInput(event)}
 >
+
                     <option value="select">Mobile</option>
                     <option value="other">...</option>
                   </FormControl>
+                  <div style={{color:"red"}}>{this.state.mobileError}</div>
+
                   <FormControl  type="text" 
                                 placeholder="Business Name" 
                                 value={this.state.businessName} 

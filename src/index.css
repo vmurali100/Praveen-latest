@@ -36,3 +36,8 @@ p {
   font-size: 14px;
   color: red;
 }
+.validations {
+  width: 200px;
+  margin: 0 auto;
+  text-align: center;
+}
