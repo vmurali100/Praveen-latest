@@ -1,5 +1,15 @@
 import React, { Component } from 'react'
-import {FormControl,Panel,Button} from 'react-bootstrap'
+import {FormControl,Panel,Button,FormGroup,Radio} from 'react-bootstrap';
+import Checkbox from './Checkbox'
+
+
+const items = [
+  'I have a fleet',
+  'I rent Trucks',
+  'I drive a Truck',
+  'I need financials and Reporting',
+  'Other (Accounting , Administrative etc)'
+];
 
 export default class Profile extends Component {
     constructor(props) {
@@ -13,15 +23,8 @@ export default class Profile extends Component {
             mobile:'',
             businessName:'',
             businessZip:'',
-            formErrors: {
-              email: '', 
-              firstName: '',
-              lastName:'',
-              phone:'',
-              mobile:'',
-              businessName:'',
-              businessZip:''
-            },
+            password:'',
+            confirmPassword:'',
             emailValid: false,
             firstNameValid:false,
             lastNameValid:false,
@@ -29,7 +32,10 @@ export default class Profile extends Component {
             mobileValid:false,
             businessNameValid:false,
             businessZipValid:false,
-            formValid:false
+            formValid:false,
+            formErrors: {
+              email: ''
+                         }
       
           }
           this.handleEmailValidation=this.handleEmailValidation.bind(this);
@@ -38,7 +44,25 @@ export default class Profile extends Component {
       handleUserInput (e) {
         const name = e.target.name;
         const value = e.target.value;
-        this.setState({[name]: value});
+        const data = e.nativeEvent.data;
+        // this.setState({[name]: value});
+        if(name=="phone" && value !="" && data!=null){
+          console.log(value.length)
+          if(value.length>4){
+            if(value.length==6 || value.length==10){
+              this.setState({[name]:value+" "})
+
+            }else{
+              this.setState({[name]:value})
+
+            }
+          }else{
+            this.setState({[name]:"+1 " +value})
+          }
+        }else{
+          this.setState({[name]:value})
+
+        }
       }
       handleEmailValidation(e){
         const name = e.target.name;
@@ -57,6 +81,10 @@ export default class Profile extends Component {
             emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
       
             fieldValidationErrors.email = emailValid ? '' : 'Please check your email address and try again.';
+            
+            if(this.state.email==""){
+              // this.setState({email})
+            }
             break;
          
           default:
@@ -82,6 +110,8 @@ export default class Profile extends Component {
         var lastNameError="";
         var phoneError="";
         var mobileError="";
+        var passwordError="";
+        var confirmPasswordError="";
         
           firstNameValid = this.state.firstName.match(/^[a-zA-Z\s]{1,}$/i)
           if(firstNameValid){
@@ -113,20 +143,54 @@ export default class Profile extends Component {
           mobileError=true;
         }else{
           mobileError=false;
-
         }
         this.setState({mobileError: mobileError ? ' Mobile is invalid':''})
 
+        if(this.state.password==""){
+          this.state.passwordError=true;
+        }else{
+          this.state.passwordError=false;
+
+        }
+
+        if(this.state.passwordError==true){
+          this.setState({passwordError:"Password field can not be empty"})
+        }else{
+          this.setState({passwordError:""})
+
+        }
+
+        if(this.state.confirmPassword==""){
+          this.state.confirmPasswordError=true;
+        }else{
+          this.state.confirmPasswordError=false;
+          
+        }
+
+        if(this.state.confirmPasswordError==true){
+          this.setState({confirmPasswordError:"Confirm Password field can not be empty"})
+        }else{
+          this.setState({confirmPasswordError:""})
+          if(this.state.password==this.state.confirmPassword){
+            this.setState({confirmPasswordError:""})
+          }else{
+            this.setState({confirmPasswordError:"Password and Confirm Password are not matching"})
+
+          }
+        }
+
+        this.handleFormSubmit();
       }
   render() {
     return (
       <div>
+                        <form onSubmit={this.handleSubmit}>
+
         <Panel bsStyle="danger">
                 <Panel.Heading>
                   <Panel.Title componentClass="h3">{this.props.value.title}</Panel.Title>
                 </Panel.Heading>
                 <Panel.Body>
-                <form onSubmit={this.handleSubmit}>
                   <FormControl type="email" 
                                 placeholder="Email Address" 
                                 value={this.state.email}
@@ -186,15 +250,101 @@ export default class Profile extends Component {
                                 name = "businessZip"
                                 onChange={(event) => this.handleUserInput(event)}
 />
-                  <Button bsStyle="danger" type="submit">Submit</Button>
 
-                </form>
                 </Panel.Body>
               </Panel>
+              <Panel bsStyle="danger">
+                <Panel.Heading>
+                      <Panel.Title componentClass="h3">TELL US ABOUT YOURSELF</Panel.Title>
+                </Panel.Heading>
+                <Panel.Body>
+                Telling us about yourlself will help us tailor the app to your needs
+                {this.createCheckboxes()}
+                    {/* <form  onSubmit={this.handleFormSubmit}> */}
+                      <div style={{color:"red"}}>{this.state.checkboxError}</div>
+
+                      {/* <Button bsStyle="danger"  type="submit">Next</Button> */}
+                    {/* </form> */}
+                    <h6>Do you rent or Lease from Ryder</h6>
+
+                    <FormGroup>
+                      <Radio name="radioGroup" inline>
+                        Yes
+                      </Radio>{' '}
+                      <Radio name="radioGroup" inline>
+                        No
+                      </Radio>{' '}
+                      
+                    </FormGroup>
+                    <h6>Account Numbers</h6>
+                    <FormControl type="text" placeholder="1234" />
+                    <FormControl type="text" placeholder="Enter Lessie or Account Number"/>
+
+                    <p>Your Password Must be between 8 and 15 characters long and contain at least one nubers , one uppercase letter , one lowercase letter and one special character</p>
+                    <FormControl type="password" placeholder="Password" value={this.state.password}
+                                name="password"
+                                onChange={(event) => this.handleUserInput(event)}/>
+                                                  <div style={{color:"red"}}>{this.state.passwordError}</div>
+
+                    <FormControl type="password" placeholder="Confirm Password" value={this.state.confirmPassword}
+                                name="confirmPassword"
+                                onChange={(event) => this.handleUserInput(event)}/>
+                                                  <div style={{color:"red"}}>{this.state.confirmPasswordError}</div>
+
+                    <Button bsStyle="danger" type="submit">Submit</Button>
+
+                </Panel.Body>
+              </Panel>  
+              </form>
+
       </div>
     )
   }
+
+  createCheckbox = label => (
+    // eslint-disable-next-line react/jsx-no-undef
+    <Checkbox
+      label={label}
+      handleCheckboxChange={this.toggleCheckbox}
+      key={label}
+    />
+  )
+
+  createCheckboxes = () => (
+    items.map(this.createCheckbox)
+  )
+
+  handleFormSubmit = () => {
+   
+    if(this.selectedCheckboxes.size==0){
+      this.setState({checkboxError:'Please select atleast one option to continue'})
+    }else{
+      this.setState({checkboxError:''})
+
+    }
+    for (const checkbox of this.selectedCheckboxes) {
+      console.log(checkbox, 'is selected.');
+      if(!checkbox){
+        console.log("Select At least one Checkbox")
+      }
+    }
+  }
+
+  componentWillMount = () => {
+    this.selectedCheckboxes = new Set();
+  }
+  toggleCheckbox = label => {
+    if (this.selectedCheckboxes.has(label)) {
+      this.selectedCheckboxes.delete(label);
+    } else {
+      this.selectedCheckboxes.add(label);
+    }
+  }
+
+
 }
+
+
 
 const FormErrors = (formErrors) => {
     
@@ -204,7 +354,7 @@ const FormErrors = (formErrors) => {
         if(formErrors.formErrors[fieldName].length > 0){
           console.log(formErrors.formErrors[fieldName])
           return (
-            <p key={i} style={{color:"red"}}>{fieldName} {formErrors.formErrors[fieldName] }</p>
+            <p key={i} style={{color:"red"}}>{formErrors.formErrors[fieldName] }</p>
           )        
         } else {
           return '';
