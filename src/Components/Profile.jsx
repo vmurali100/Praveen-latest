@@ -25,13 +25,8 @@ export default class Profile extends Component {
             businessZip:'',
             password:'',
             confirmPassword:'',
+            lease:'',
             emailValid: false,
-            firstNameValid:false,
-            lastNameValid:false,
-            phoneValid:false,
-            mobileValid:false,
-            businessNameValid:false,
-            businessZipValid:false,
             formValid:false,
             formErrors: {
               email: ''
@@ -64,9 +59,9 @@ export default class Profile extends Component {
 
         }
       }
-      handleEmailValidation(e){
-        const name = e.target.name;
-        const value = e.target.value;
+      handleEmailValidation(){
+        const name = 'email';
+        const value =this.state.email;
         this.setState({[name]: value});
          this.validateField(name, value) 
         }
@@ -105,14 +100,11 @@ export default class Profile extends Component {
         var firstNameValid="";
         var lastNameValid=""
         var phoneValid="";
-        var mobileValid="";
-        var firstNameError="";
+         var firstNameError="";
         var lastNameError="";
         var phoneError="";
         var mobileError="";
-        var passwordError="";
-        var confirmPasswordError="";
-        
+         
           firstNameValid = this.state.firstName.match(/^[a-zA-Z\s]{1,}$/i)
           if(firstNameValid){
             firstNameError=false
@@ -179,8 +171,19 @@ export default class Profile extends Component {
           }
         }
 
+        if(this.state.lease==""){
+          this.setState({leaseError:"Select one option to continue"})
+        }else{
+          this.setState({leaseError:""})
+
+        }
+        this.handleEmailValidation(e);
         this.handleFormSubmit();
       }
+      onLeaseChanged=(e)=>{
+        this.setState({lease:e.target.value})
+      }
+     
   render() {
     return (
       <div>
@@ -268,17 +271,18 @@ export default class Profile extends Component {
                     <h6>Do you rent or Lease from Ryder</h6>
 
                     <FormGroup>
-                      <Radio name="radioGroup" inline>
+                      <Radio name="lease" inline value="Yes" checked={this.state.lease=="Yes"} onChange={this.onLeaseChanged}>
                         Yes
                       </Radio>{' '}
-                      <Radio name="radioGroup" inline>
+                      <Radio name="lease" inline value="No" checked={this.state.lease=="No"} onChange={this.onLeaseChanged}>
                         No
                       </Radio>{' '}
                       
                     </FormGroup>
+                    <div style={{color:"red"}}>{this.state.leaseError}</div>
+
                     <h6>Account Numbers</h6>
-                    <FormControl type="text" placeholder="1234" />
-                    <FormControl type="text" placeholder="Enter Lessie or Account Number"/>
+                    <AccountComp tochec={this.state.lease}/>
 
                     <p>Your Password Must be between 8 and 15 characters long and contain at least one nubers , one uppercase letter , one lowercase letter and one special character</p>
                     <FormControl type="password" placeholder="Password" value={this.state.password}
@@ -344,7 +348,26 @@ export default class Profile extends Component {
 
 }
 
-
+function AccountComp(obj){
+  console.log(obj.tochec)
+  if(obj.tochec==="Yes"){
+    return (
+      <div>
+          <FormControl type="text" placeholder="1234" />
+          <FormControl type="text" placeholder="Enter Lessie or Account Number"/>
+      </div>
+  
+    )
+  }else{
+    return (
+      <div>
+        
+      </div>
+  
+    )
+  }
+ 
+}
 
 const FormErrors = (formErrors) => {
     
@@ -363,3 +386,4 @@ const FormErrors = (formErrors) => {
     </div>
     )
   }
+  
