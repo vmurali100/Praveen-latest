@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import {FormControl,Panel,Button,FormGroup,Radio} from 'react-bootstrap';
-import Checkbox from './Checkbox'
+import Checkbox from './Checkbox';
+import Modal from 'react-modal';
+
 
 
 const items = [
@@ -10,6 +12,18 @@ const items = [
   'I need financials and Reporting',
   'Other (Accounting , Administrative etc)'
 ];
+const customStyles = {
+  content : {
+    top                   : '50%',
+    width                 : '30%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
+
 
 export default class Profile extends Component {
     constructor(props) {
@@ -28,6 +42,9 @@ export default class Profile extends Component {
             lease:'',
             emailValid: false,
             formValid:false,
+            showModal: false,
+            modalIsOpen: false,
+
             formErrors: {
               email: ''
                          }
@@ -35,6 +52,21 @@ export default class Profile extends Component {
           }
           this.handleEmailValidation=this.handleEmailValidation.bind(this);
           this.handleSubmit=this.handleSubmit.bind(this)
+          this.openModal = this.openModal.bind(this);
+          this.afterOpenModal = this.afterOpenModal.bind(this);
+          this.closeModal = this.closeModal.bind(this);
+    }
+    openModal() {
+      this.setState({modalIsOpen: true});
+    }
+   
+    afterOpenModal() {
+      // references are now sync'd and can be accessed.
+      this.subtitle.style.color = '#f00';
+    }
+   
+    closeModal() {
+      this.setState({modalIsOpen: false});
     }
       handleUserInput (e) {
         const name = e.target.name;
@@ -63,7 +95,7 @@ export default class Profile extends Component {
         const name = 'email';
         const value =this.state.email;
         this.setState({[name]: value});
-         this.validateField(name, value) 
+        this.validateField(name, value) ;
         }
       
       validateField(fieldName, value) {
@@ -80,6 +112,7 @@ export default class Profile extends Component {
             if(this.state.email==""){
               // this.setState({email})
             }
+            
             break;
          
           default:
@@ -96,6 +129,7 @@ export default class Profile extends Component {
 
       handleSubmit(e){
         e.preventDefault()
+        this.openModal()
         console.log(this.state)
         var firstNameValid="";
         var lastNameValid=""
@@ -204,6 +238,27 @@ export default class Profile extends Component {
  />               <div className="error">
                       <FormErrors formErrors={this.state.formErrors} />
                   </div>
+                  <Modal
+                      isOpen={this.state.modalIsOpen}
+                      onAfterOpen={this.afterOpenModal}
+                      onRequestClose={this.closeModal}
+                      style={customStyles}
+                      contentLabel="Example Modal"
+                    >
+            
+                      <h2 ref={subtitle => this.subtitle = subtitle}></h2>
+                      {/* <div>This email Already Exists</div> */}
+                      {/* <button onClick={this.closeModal}>Re Enter</button> */}
+                      {/* <button onClick={this.closeModal}>Go To Login</button> */}
+                          <Panel.Heading>
+                                <Panel.Title componentClass="h3">THIS EMAIL ALREADY ESISTS</Panel.Title>
+                          </Panel.Heading>
+                          <Panel.Body>
+                          <Button bsStyle="danger" onClick={this.closeModal}>Re Enter</Button>
+                          <Button bsStyle="danger" onClick={this.closeModal}>Go to Login</Button>
+
+                          </Panel.Body>
+                    </Modal>
                   <FormControl  type="text" 
                                 placeholder="First Name" 
                                 value={this.state.firstName} 
