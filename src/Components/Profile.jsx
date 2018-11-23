@@ -33,7 +33,7 @@ export default class Profile extends Component {
             email: '',
             firstName:'',
             lastName:'',
-            phone:'',
+            phone:'+1 ',
             mobile:'',
             businessName:'',
             businessZip:'',
@@ -84,10 +84,14 @@ export default class Profile extends Component {
 
             }
           }else{
-            this.setState({[name]:"+1 " +value})
+            this.setState({[name]:value})
           }
         }else{
-          this.setState({[name]:value})
+          if(this.state.phone.length !==3){
+            this.setState({[name]:value})
+          }
+
+          console.log(this.state.phone.length)
 
         }
       }
